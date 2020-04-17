@@ -5,6 +5,11 @@ export const cabinetOfficers = [
     email: "jaythras@iupui.edu",
   },
   {
+    name: "Daniel Peach",
+    title: "Vice President",
+    email: "djpeach@iupui.edu",
+  },
+  {
     name: "Alex Hicks",
     title: "Technology Officer",
     email: "aldahick@iupui.edu",
@@ -13,5 +18,10 @@ export const cabinetOfficers = [
     name: "Anna Berndt",
     title: "Treasurer",
     email: "alberndt@iupui.edu",
+  },
+  {
+    name: "Logan Troyer",
+    title: "Senator",
+    email: "troyerl@iupui.edu",
   },
 ];
