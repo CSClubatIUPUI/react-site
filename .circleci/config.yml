@@ -5,16 +5,16 @@ workflows:
   build_and_deploy:
     jobs:
       - install_dependencies
-      - build:
-          requires:
-            - install_dependencies
       - lint:
           requires:
             - install_dependencies
+      # normally, lint & build could go in parallel, but build has to finish after lint or deploy will fail
+      - build:
+          requires:
+            - lint
       - deploy:
           requires:
             - build
-            - lint
           filters:
             branches:
               only: master
@@ -36,21 +36,6 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package-lock.json" }}
-  build:
-    docker:
-      - image: circleci/node:12.16
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package-lock.json" }}
-      - run:
-          name: Build
-          command: npm run build
-      - save_cache:
-          paths:
-            - build
-          key: v1-build-{{ .Revision }}
   lint:
     docker:
       - image: circleci/node:12.16
@@ -62,20 +47,27 @@ jobs:
       - run:
           name: Lint
           command: npm run lint
-  deploy:
+  build:
     docker:
       - image: circleci/node:12.16
     steps:
       - checkout
       - restore_cache:
           keys:
-          - v1-build-{{ .Revision }}
+          - v1-dependencies-{{ checksum "package-lock.json" }}
+      - run:
+          name: Build
+          command: npm run build
       - run:
           name: Create Archive
           command: zip -r build.zip build
       - store_artifacts:
           path: build.zip
           destination: build.zip
+  deploy:
+    docker:
+      - image: circleci/node:12.16
+    steps:
       - run:
           name: Deploy to web server
-          command: sleep 5 && curl https://csclub.cs.iupui.edu/hooks/deploy.php
+          command: curl https://csclub.cs.iupui.edu/hooks/deploy.php
