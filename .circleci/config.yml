@@ -11,6 +11,10 @@ workflows:
       - lint:
           requires:
             - install_dependencies
+      - deploy:
+          requires:
+            - build
+            - lint
 
 jobs:
   install_dependencies:
@@ -34,14 +38,34 @@ jobs:
       - image: circleci/node:12.16
     steps:
       - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package-lock.json" }}
       - run:
           name: Build
           command: npm run build
+      - run:
+          name: Create Archive
+          command: zip -r build.zip build
+      - store_artifacts:
+          path: build.zip
+          destination: build.zip
   lint:
     docker:
       - image: circleci/node:12.16
     steps:
       - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package-lock.json" }}
       - run:
           name: Lint
           command: npm run lint
+  deploy:
+    docker:
+      - image: circleci/node:12.16
+    steps:
+      - checkout
+      - run:
+          name: Nothing yet
+          command: echo Nothing here yet
