@@ -78,4 +78,4 @@ jobs:
           destination: build.zip
       - run:
           name: Deploy to web server
-          command: sleep 1 && curl https://csclub.cs.iupui.edu/hooks/deploy.php
+          command: sleep 5 && curl https://csclub.cs.iupui.edu/hooks/deploy.php
