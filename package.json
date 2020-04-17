@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "license": "MIT",
   "author": "Alex Hicks <alex@alexhicks.net> (https://alexhicks.net)",
+  "homepage": "https://csclub.cs.iupui.edu/react/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
