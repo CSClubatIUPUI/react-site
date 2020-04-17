@@ -15,6 +15,9 @@ workflows:
           requires:
             - build
             - lint
+          filters:
+            branches:
+              only: master
 
 jobs:
   install_dependencies:
@@ -44,12 +47,10 @@ jobs:
       - run:
           name: Build
           command: npm run build
-      - run:
-          name: Create Archive
-          command: zip -r build.zip build
-      - store_artifacts:
-          path: build.zip
-          destination: build.zip
+      - save_cache:
+          paths:
+            - build
+          key: v1-build-{{ .Revision }}
   lint:
     docker:
       - image: circleci/node:12.16
@@ -66,6 +67,15 @@ jobs:
       - image: circleci/node:12.16
     steps:
       - checkout
+      - restore_cache:
+          keys:
+          - v1-build-{{ .Revision }}
       - run:
-          name: Nothing yet
-          command: echo Nothing here yet
+          name: Create Archive
+          command: zip -r build.zip build
+      - store_artifacts:
+          path: build.zip
+          destination: build.zip
+      - run:
+          name: Deploy to web server
+          command: curl https://csclub.cs.iupui.edu/hooks/deploy.php
