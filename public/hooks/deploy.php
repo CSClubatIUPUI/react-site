@@ -16,9 +16,14 @@ if (count($artifacts) === 0) {
 }
 shell_exec("wget -O $TEMP_ZIP_FILENAME \"{$artifacts[0]["url"]}\"");
 shell_exec("unzip $TEMP_ZIP_FILENAME -d $OUTPUT_DIR");
+
 shell_exec("mv $OUTPUT_DIR/build/* $OUTPUT_DIR/");
 shell_exec("mv $OUTPUT_DIR/build/.* $OUTPUT_DIR/");
+shell_exec("chown -R g+w $OUTPUT_DIR");
+shell_exec("chgrp -R csclub $OUTPUT_DIR");
+
 shell_exec("rm $OUTPUT_DIR/build");
+
 echo(json_encode([
   "success" => true,
   "message" => "Deployed new version of React site successfully"
