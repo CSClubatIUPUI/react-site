@@ -6,11 +6,11 @@ workflows:
     jobs:
       - install_dependencies
       - build:
-        requires:
-          - install_dependencies
+          requires:
+            - install_dependencies
       - lint:
-        requires:
-          - install_dependencies
+          requires:
+            - install_dependencies
 
 jobs:
   install_dependencies:
