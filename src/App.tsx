@@ -1,11 +1,11 @@
 import React from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
-import { MuiThemeProvider, Grid } from "@material-ui/core";
+import { Grid, MuiThemeProvider } from "@material-ui/core";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { Navbar } from "./components/Navbar";
 import { routes } from "./routes";
 import { theme } from "./theme";
-import { Navbar } from "./components/Navbar";
 
-export const App = () => (
+export const App: React.FC = () => (
   <MuiThemeProvider theme={theme}>
     <BrowserRouter>
       <Navbar />

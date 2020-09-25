@@ -1,7 +1,6 @@
 version: 2.1
 
 workflows:
-  version: 2.1
   build_and_deploy:
     jobs:
       - install_dependencies
@@ -9,6 +8,7 @@ workflows:
           requires:
             - install_dependencies
       # normally, lint & build could go in parallel, but build has to finish after lint or deploy will fail
+      # the deploy job requires that the build job be the most recent run
       - build:
           requires:
             - lint
@@ -22,42 +22,44 @@ workflows:
 jobs:
   install_dependencies:
     docker:
-      - image: circleci/node:12.16
+      - image: cimg/node:12.18
     steps:
       - checkout
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package-lock.json" }}
-          - v1-dependencies-
+          - v2-dependencies-{{ checksum "yarn.lock" }}
+          - v2-dependencies-
       - run:
           name: Install NPM modules
-          command: npm install
+          command: yarn --frozen-lockfile
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package-lock.json" }}
+          key: v2-dependencies-{{ checksum "yarn.lock" }}
+      - persist_to_workspace:
+          root: "."
+          paths:
+            - node_modules
   lint:
     docker:
-      - image: circleci/node:12.16
+      - image: cimg/node:12.18
     steps:
       - checkout
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package-lock.json" }}
+      - attach_workspace:
+          at: .
       - run:
           name: Lint
-          command: npm run lint
+          command: yarn lint
   build:
     docker:
-      - image: circleci/node:12.16
+      - image: cimg/node:12.18
     steps:
       - checkout
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package-lock.json" }}
+      - attach_workspace:
+          at: .
       - run:
           name: Build
-          command: npm run build
+          command: yarn build
       - run:
           name: Create Archive
           command: zip -r build.zip build
@@ -66,7 +68,7 @@ jobs:
           destination: build.zip
   deploy:
     docker:
-      - image: circleci/node:12.16
+      - image: cimg/node:12.18
     steps:
       - run:
           name: Deploy to web server

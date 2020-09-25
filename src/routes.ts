@@ -1,6 +1,6 @@
+import { CabinetScene } from "./scenes/cabinet";
 import { HomeScene } from "./scenes/home";
 import { ResourcesScene } from "./scenes/resources";
-import { CabinetScene } from "./scenes/cabinet";
 
 interface RouteDefinition {
   path: string;

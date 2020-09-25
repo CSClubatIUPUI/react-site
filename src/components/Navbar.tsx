@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  AppBar, Toolbar, MenuItem, Link as MuiLink, Typography,
+  AppBar, Link as MuiLink, MenuItem, Toolbar, Typography,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { routes } from "../routes";
@@ -14,7 +14,9 @@ export const Navbar: React.FC = () => (
       {routes.map(({ path, label }) => (
         <MenuItem key={path}>
           <MuiLink component={Link} to={path}>
-            <Typography color="textSecondary">{label}</Typography>
+            <Typography color="textSecondary">
+              {label}
+            </Typography>
           </MuiLink>
         </MenuItem>
       ))}
